@@ -1,0 +1,85 @@
+### PROTECT FILES ###
+<FilesMatch "\.(htaccess|htpasswd|ini|fla|psd|log|sh)$">
+Order Allow,Deny
+Deny from all
+</FilesMatch>
+
+RewriteEngine on
+RewriteRule dj-wodzirej-wesele-imprezy-poznan index.html
+RewriteRule dj-wodzirej-cena-oferta oferta.html
+RewriteRule dj-galeria-wesela galeria.html
+RewriteRule dj-filmy-wesela filmy.html
+RewriteRule dj-brachole-o-nas onas.html
+RewriteRule dj-brachole-kontakt kontakt.html
+RewriteRule dj-wedding main.html
+RewriteRule dj-offer-price-poland offer.html
+RewriteRule dj-gallery gallery.html
+RewriteRule dj-clips clips.html
+RewriteRule dj-about aboutus.html
+RewriteRule dj-contact contact.html
+RewriteRule dj-hochzeiten-geschehen-posen hauptseite_de.html
+RewriteRule dj-angebot-preis-polen angebot_de.html
+RewriteRule dj-galerie galerie_de.html
+RewriteRule dj-brachole-clips clips_de.html
+RewriteRule dj-uber-uns uberuns_de.html
+RewriteRule brachole-dj-kontakt kontakt_de.html
+
+#RewriteCond %{HTTP_HOST} !^www.djbrachole.pl$ [NC]
+#RewriteCond %{REQUEST_URI} !^/img/oglogo.jpg$ [NC]
+#RewriteRule ^(.*)$ http://www.djbrachole.pl/dj-wodzirej-wesele-imprezy-poznan$1 [L,R=301]
+
+RewriteCond %{HTTP_USER_AGENT} libwww-perl.*
+RewriteRule .* ? [F,L]
+
+
+AddType image/svg+xml svg svgz
+AddEncoding gzip svgz
+
+SetOutputFilter DEFLATE
+
+BrowserMatch ^Mozilla/4 gzip-only-text/html
+BrowserMatch ^Mozilla/4\.0[678] no-gzip
+BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+
+# BEGIN Expire headers
+# Makes cached files stay cached for longer (304 Not modified) = fewer 200 responses.
+# Aim for at least 1 month for images, ideally a year (not longer - that'll break RFC specs)
+
+  ExpiresActive On
+  ExpiresDefault "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 7 days"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType application/x-shockwave-flash "access plus 1 year"
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType text/javascript "access plus 7 days"
+  ExpiresByType application/x-javascript "access plus 7 days"
+  ExpiresByType text/html "access plus 7 days"
+  ExpiresByType application/xhtml+xml "access plus 7 days"
+
+# END Expire headers
+
+# BEGIN Cache-Control Headers
+# Only using the private/public values here - not max-age (Expires headers cover the same thing, and are more widely supported)
+
+  Header set Cache-Control "public"
+  Header set Cache-Control "private"
+  Header set Cache-Control "private, must-revalidate"
+
+# END Cache-Control Headers
+
+# BEGIN Turn ETags Off
+# Inherently misconfigured, especially for server clusters
+
+  Header unset ETag
+  FileETag None
+
+# END Turn ETags Off
+
+# BEGIN Remove Last-Modified Header
+# We're using Expires header to check for freshness, so save bytes by not returning this header.
+
+  Header unset Last-Modified
+
+# END Remove Last-Modified Header
