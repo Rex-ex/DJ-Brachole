@@ -5,6 +5,11 @@ Deny from all
 </FilesMatch>
 
 RewriteEngine on
+
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteRule ^ https://djbrachole.pl%{REQUEST_URI} [L,NE,R=301]
+
 RewriteRule dj-wodzirej-wesele-imprezy-poznan index.html
 RewriteRule dj-wodzirej-cena-oferta oferta.html
 RewriteRule dj-galeria-wesela galeria.html
@@ -24,10 +29,6 @@ RewriteRule dj-brachole-clips clips_de.html
 RewriteRule dj-uber-uns uberuns_de.html
 RewriteRule brachole-dj-kontakt kontakt_de.html
 
-#RewriteCond %{HTTP_HOST} !^www.djbrachole.pl$ [NC]
-#RewriteCond %{REQUEST_URI} !^/img/oglogo.jpg$ [NC]
-#RewriteRule ^(.*)$ http://www.djbrachole.pl/dj-wodzirej-wesele-imprezy-poznan$1 [L,R=301]
-
 RewriteCond %{HTTP_USER_AGENT} libwww-perl.*
 RewriteRule .* ? [F,L]
 
@@ -40,6 +41,9 @@ SetOutputFilter DEFLATE
 BrowserMatch ^Mozilla/4 gzip-only-text/html
 BrowserMatch ^Mozilla/4\.0[678] no-gzip
 BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+
+#ServerSignature Off
+#ServerTokens Prod
 
 # BEGIN Expire headers
 # Makes cached files stay cached for longer (304 Not modified) = fewer 200 responses.
